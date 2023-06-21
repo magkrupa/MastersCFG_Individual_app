@@ -3,6 +3,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native'
 import AboutUs from './src/screens/AboutUs';
 import HomePage from './src/screens/Home';
+import Contact from './src/screens/Contact';
+import FAQ from './src/screens/FAQ';
 
 const Stack = createStackNavigator();
 
@@ -12,6 +14,8 @@ export default function App() {
     <Stack.Navigator>
     <Stack.Screen name="Home" component={HomePage}/>
     <Stack.Screen name="AboutUs" component={AboutUs}/>
+    <Stack.Screen name="Contact" component={Contact}/>
+    <Stack.Screen name="FAQ" component={FAQ}/>
    </Stack.Navigator>
    </NavigationContainer>
   );
@@ -38,6 +42,8 @@ const styles = StyleSheet.create({
     elevation: 3,
     backgroundColor: '#ffdd80',
     margin: 10,
+    width: 300,  // Specify the width
+    height: 80,  // Specify the height
   },
   textStyle: {
     fontSize: 16,

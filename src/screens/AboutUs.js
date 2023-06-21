@@ -5,7 +5,7 @@ export default function AboutUs({ navigation }) {
     <View style={styles.container}>
       <Text style={styles.header}>Welcome to the Mobile App +Masters</Text>
       <Text style={styles.textStyle}>About Us Page</Text>
-      <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.goBack()}>
+      <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Contact')}>
         <Text style={styles.textStyle}>Go back!</Text>
       </TouchableOpacity>
     </View>
