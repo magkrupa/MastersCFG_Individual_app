@@ -1,8 +1,27 @@
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function AboutUs({ navigation }) {
+  const [username, setUsername] = useState('');
+
+  useEffect(() => {
+    const getUsername = async () => {
+      try {
+        const value = await AsyncStorage.getItem('username');
+        if (value !== null) {
+          setUsername(value);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getUsername();
+  }, []); 
+
   return (
     <View style={styles.container}>
+      <Text style={styles.username}>Hello, {username}!</Text>
       <Text style={styles.header}>Welcome to the Mobile App +Masters</Text>
       <Text style={styles.textStyle}>About Us Page</Text>
       <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Contact')}>
@@ -17,6 +36,14 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     textAlign: 'center'
+  },
+  username: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
   container: {
     flex: 1,

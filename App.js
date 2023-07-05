@@ -5,19 +5,40 @@ import AboutUs from './src/screens/AboutUs';
 import HomePage from './src/screens/Home';
 import Contact from './src/screens/Contact';
 import FAQ from './src/screens/FAQ';
+import LogIn from './src/screens/LogIn';
+
+
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
 
 const Stack = createStackNavigator();
 
 export default function App() {
+
+  const reducer = (state, action) => {
+    if (action.type === 'changeUsername') {
+      return { username: action.payload };
+    }
+    else {
+      return state;
+    }
+  }
+  const store = createStore(reducer, {username:'No user set yet'});
+
+
   return (
-    <NavigationContainer>
-    <Stack.Navigator>
-    <Stack.Screen name="Home" component={HomePage}/>
-    <Stack.Screen name="AboutUs" component={AboutUs}/>
-    <Stack.Screen name="Contact" component={Contact}/>
-    <Stack.Screen name="FAQ" component={FAQ}/>
-   </Stack.Navigator>
-   </NavigationContainer>
+    <Provider store={store}>
+     < NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomePage}/>
+          <Stack.Screen name="AboutUs" component={AboutUs}/>
+        <Stack.Screen name="Contact" component={Contact}/>
+        <Stack.Screen name="FAQ" component={FAQ}/>
+        <Stack.Screen name="LogIn" component={LogIn}/>
+
+        </Stack.Navigator>
+    </NavigationContainer>
+   </Provider>
   );
 }
 

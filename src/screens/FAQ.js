@@ -1,28 +1,63 @@
+import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function AboutUs({ navigation }) {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Frequently asked questions</Text>
-      <Text style={styles.header}> </Text>
-      <Text style={styles.header}> </Text>
-      <Text style={styles.italicTextStyle}>1. Something does not work?</Text>
-      <Text style={styles.textStyle}> Shake the phone!</Text>
-      <Text style={styles.italicTextStyle}>2. You do not know something?</Text>
-      <Text style={styles.textStyle}> Google it!</Text>
+export default class AboutUs extends Component {
+  constructor(props) {
+    super(props);
 
-      <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Home')}>
-        <Text style={styles.textStyle}>Go to Home page</Text>
-      </TouchableOpacity>
-    </View>
-  );
+    this.state = {
+      username: '',
+    };
+  }
+
+  componentDidMount() {
+    this.getUsername();
+    console.log('Component has mounted');
+  }
+
+  getUsername = async () => {
+    try {
+      const value = await AsyncStorage.getItem('username');
+      if (value !== null) {
+        this.setState({ username: value });
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  render() {
+    return (
+      <View style={styles.container}>
+        <Text style={styles.username}>Hello, {this.state.username}!</Text>
+        <Text style={styles.header}>Frequently asked questions</Text>
+        <Text style={styles.italicTextStyle}>1. Something does not work?</Text>
+        <Text style={styles.textStyle}> Shake the phone!</Text>
+        <Text style={styles.italicTextStyle}>2. You do not know something?</Text>
+        <Text style={styles.textStyle}> Google it!</Text>
+
+        <TouchableOpacity style={styles.buttonStyle} onPress={() => this.props.navigation.navigate('Home')}>
+          <Text style={styles.textStyle}>Go to Home page</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   header: {
     fontSize: 28,
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
+  },
+  username: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'right',
+    position: 'absolute',
+    right: 10,
+    top: 10,
   },
   container: {
     flex: 1,
