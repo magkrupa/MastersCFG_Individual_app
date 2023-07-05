@@ -1,93 +1,101 @@
-import React from 'react';
-import { View, StyleSheet, Text, TouchableOpacity, Platform } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState } from 'react';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
 
-export default function HomePage({ navigation }) {
+const LoginScreen = () => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigation = useNavigation();
+
+  const handleLogin = async () => {
+    try {
+      const storedUsername = await AsyncStorage.getItem('username');
+      const storedPassword = await AsyncStorage.getItem('password');
+
+      if (username === storedUsername && password === storedPassword) {
+        alert('Login successful!');
+        navigation.navigate('LogIn');
+      } else {
+        alert('Invalid username or password. Please try again.');
+      }
+    } catch (error) {
+      console.log('Error while login:', error);
+    }
+  };
+
+  const handleRegister = async () => {
+    if (username === '' || password === '') {
+      alert('Please enter a username and password.');
+      return;
+    }
+
+    try {
+      await AsyncStorage.setItem('username', username);
+      await AsyncStorage.setItem('password', password);
+
+      alert('Registration successful!');
+      setUsername('');
+      setPassword('');
+
+      // Redirect to the home page after successful registration
+      navigation.navigate('Contact');
+    } catch (error) {
+      console.log('Error storing credentials:', error);
+    }
+  };
+
   return (
-    <LinearGradient
-      colors={['#46C2CB', '#F2F7A1']}
-      start={{x: 0, y: 0}}
-      end={{x: 1, y: 1}}
-      style={styles.container}
-    >
-      <Text style={styles.header}>Welcome to the Mobile App +Masters</Text>
-      <Text style={styles.textStyle}>Go to:</Text>
+    <View style={styles.container}>
+      <Text style={styles.label}>Username:</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={text => setUsername(text)}
+        value={username}
+        placeholder="Enter your username"
+      />
 
-      <View style={styles.buttonWrapper}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('AboutUs')}>
-          <LinearGradient colors={['#6D67E4', '#8B67E4']} style={styles.gradient}>
-            <Text style={styles.buttonText}>The about page</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+      <Text style={styles.label}>Password:</Text>
+      <TextInput
+        style={styles.input}
+        onChangeText={text => setPassword(text)}
+        value={password}
+        secureTextEntry
+        placeholder="Enter your password"
+      />
+
+      <View style={styles.buttonContainer}>
+        <Button title="Log in" onPress={handleLogin} />
       </View>
 
-      <View style={styles.buttonWrapper}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('Contact')}>
-          <LinearGradient colors={['#6D67E4', '#8B67E4']} style={styles.gradient}>
-            <Text style={styles.buttonText}>Contact</Text>
-          </LinearGradient>
-        </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <Button title="Register" onPress={handleRegister} />
       </View>
-
-      <View style={styles.buttonWrapper}>
-        <TouchableOpacity style={styles.buttonStyle} onPress={() => navigation.navigate('FAQ')}>
-          <LinearGradient colors={['#6D67E4', '#8B67E4']} style={styles.gradient}>
-            <Text style={styles.buttonText}>FAQ</Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
-    </LinearGradient>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    margin: 20,
-  },
   container: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
+    paddingHorizontal: 16,
   },
-  buttonWrapper: {
-    marginBottom: 10,
-    ...Platform.select({ // Specific properties for each platform
-      ios: { // Shadow properties for iOS
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-      },
-      android: { // Elevation for Android
-        elevation: 5,
-      },
-    }),
-  },
-  buttonStyle: {
-    width: 250,
-    height: 50,
-    borderRadius: 10,
-    overflow: 'hidden',
-  },
-  gradient: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: 18,
+  label: {
+    fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 8,
   },
-  textStyle: {
-    fontSize: 20,
-    lineHeight: 21,
-    fontWeight: 'normal',
-    letterSpacing: 0.25,
-    color: 'black',
-    marginBottom: 10,
+  input: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    paddingHorizontal: 8,
+    marginBottom: 16,
+  },
+  buttonContainer: {
+    marginBottom: 8, 
   },
 });
+
+export default LoginScreen;
